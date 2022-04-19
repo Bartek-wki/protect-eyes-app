@@ -1,6 +1,5 @@
 import React from 'react';
 import { render } from 'react-dom';
-import Description from './components/Description/Description';
 
 const Description = () => (
   <div>
@@ -40,18 +39,39 @@ class App extends React.Component {
   };
 
   startTimer() {
-    this.
+    this.setState({timer: setInterval(() => {this.step()},1000)})
     this.setState({ time: 1200 });
     this.setState({ status: 'work' });
   }
 
-  step() {
+  stopTimer() {
+    clearInterval(this.state.timer);
+    this.setState({ time: 1200 });
+    this.setState({ status: 'off' });
+  }
 
+  playBell() {
+    const bell = new Audio('./sounds/bell.wav')
+    return bell.play();
+  }
+
+  step() {
+    this.setState({ time: this.state.time - 1 });
+    if (this.state.time === 0) {
+      this.playBell();
+
+      if (this.state.status === 'work') {
+        this.setState({ status: 'rest' });
+        this.setState({ time: 20 })
+      } else if (this.state.status === 'rest') {
+        this.setState({ status: 'work' });
+        this.setState({ time: 1200 });
+      }
+    }
   }
 
   render() {
-    const { status, time } = this.state;
-    console.log(status);
+    const { status, time, timer } = this.state;
     
     return (
       <div>
@@ -65,8 +85,8 @@ class App extends React.Component {
           </div>
         }
         {status === 'off' && <button className="btn" onClick={() => this.startTimer()}>Start</button>}
-        {status !== <button className="btn">Stop</button>}
-        <button className="btn btn-close">X</button>
+        {status !== 'off' && <button className="btn" onClick={() => this.stopTimer()}>Stop</button>}
+        <button className="btn btn-close" onClick={() => window.close()}>X</button>
       </div>
     )
   }
