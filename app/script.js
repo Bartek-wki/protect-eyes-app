@@ -39,15 +39,12 @@ class App extends React.Component {
   };
 
   startTimer() {
-    this.setState({timer: setInterval(() => {this.step()},1000)})
-    this.setState({ time: 1200 });
-    this.setState({ status: 'work' });
+    this.setState({ timer: setInterval(() => { this.step() }, 1000), time: 1200, status: 'work' });
   }
 
   stopTimer() {
     clearInterval(this.state.timer);
-    this.setState({ time: 1200 });
-    this.setState({ status: 'off' });
+    this.setState({ time: 1200, status: 'off' });
   }
 
   playBell() {
@@ -56,23 +53,24 @@ class App extends React.Component {
   }
 
   step() {
-    this.setState({ time: this.state.time - 1 });
+    this.setState({ time: this.state.time - 1 }, this.changeStatus);
+  }
+
+  changeStatus() {
     if (this.state.time === 0) {
       this.playBell();
 
       if (this.state.status === 'work') {
-        this.setState({ status: 'rest' });
-        this.setState({ time: 20 })
+        this.setState({ status: 'rest', time: 20 });
       } else if (this.state.status === 'rest') {
-        this.setState({ status: 'work' });
-        this.setState({ time: 1200 });
+        this.setState({ status: 'work', time: 1200 });
       }
     }
   }
 
   render() {
     const { status, time, timer } = this.state;
-    
+
     return (
       <div>
         <h1>Protect your eyes</h1>
